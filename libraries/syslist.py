@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -18,11 +18,11 @@
 
 #pylint: disable-msg=E1101
 
-import action as lib_action
-import program as lib_program
-import board as lib_board
-import system as lib_system
-import ramp as lib_ramp
+from . import action as lib_action
+from . import program as lib_program
+from . import board as lib_board
+from . import system as lib_system
+from . import ramp as lib_ramp
 
 class ActionList(object):
     def __init__(self, system=None):
@@ -31,26 +31,26 @@ class ActionList(object):
         self.ramps = dict()
 
         if not isinstance(system, lib_system.System):
-            print "WARNING: wrong call to action list class (\"%s\" given instead of \"%s\")"%(str(type(system)), str(lib_system.System))
+            print("WARNING: wrong call to action list class (\"%s\" given instead of \"%s\")"%(str(type(system)), str(lib_system.System)))
         self.system = system
 
     def tot_list(self):
-        return dict(self.actions.items() + self.programs.items() + self.ramps.items())
+        return dict(list(self.actions.items()) + list(self.programs.items()) + list(self.ramps.items()))
 
     def get(self, action_name, *args, **kwargs):
-        if action_name in self.actions.keys()+self.ramps.keys():
+        if action_name in list(self.actions.keys())+list(self.ramps.keys()):
             return self.tot_list()[action_name]["call"](*args, **kwargs)
-        elif action_name in self.programs.keys():
+        elif action_name in list(self.programs.keys()):
             cmd = self.system.cmd_thread
             return self.tot_list()[action_name]["call"]\
                     (lib_program.Program(self.system, action_name), cmd, *args, **kwargs)
         else:
-            print "ERROR: action \"%s\" not found"%action_name
+            print("ERROR: action \"%s\" not found"%action_name)
             return None
 
     def get_cmd(self, action_name):
         cmd = self.system.cmd_thread
-        if action_name in self.programs.keys():
+        if action_name in list(self.programs.keys()):
             act_cmd = self.tot_list()[action_name]["cmd"]
             if act_cmd is not None:
                 return act_cmd(cmd)
@@ -60,16 +60,16 @@ class ActionList(object):
             return None
 
     def is_program(self, action_name):
-        return self.programs.has_key(action_name)
+        return action_name in self.programs
 
     def is_action(self, action_name):
-        return self.actions.has_key(action_name)
+        return action_name in self.actions
 
     def is_ramp(self, action_name):
-        return self.ramps.has_key(action_name)
+        return action_name in self.ramps
 
     def get_dict(self, action_name):
-        if action_name in self.tot_list().keys():
+        if action_name in list(self.tot_list().keys()):
             new_dict = self.tot_list()[action_name].copy()
             del new_dict["call"]
             new_dict["vars"] = new_dict["vars"].copy()
@@ -93,8 +93,8 @@ class ActionList(object):
             board=None, parameters=None, variables=None, var_formats=None,
             handler=None, categories=None, commands=None, comment=""):
         action_name = str(action_name)
-        if self.actions.has_key(action_name) or self.programs.has_key(action_name):
-            print "ERROR: action \"" + action_name + "\" is already defined"
+        if action_name in self.actions or action_name in self.programs:
+            print("ERROR: action \"" + action_name + "\" is already defined")
             return
         else:
             if board is not None:
@@ -105,13 +105,13 @@ class ActionList(object):
                 parameters = dict()
             if type(parameters) != dict:
                 parameters = dict()
-                print "WARNING: wrong parameters definition for action \"%s\" (must be a dict or None)"%action_name
+                print("WARNING: wrong parameters definition for action \"%s\" (must be a dict or None)"%action_name)
 
             if variables is None:
                 variables = dict()
             if type(variables) != dict:
                 variables = dict()
-                print "WARNING: wrong variables definition for action \"%s\" (must be a dict or None)"%action_name
+                print("WARNING: wrong variables definition for action \"%s\" (must be a dict or None)"%action_name)
 
             if var_formats is None:
                 var_formats = dict()
@@ -121,13 +121,13 @@ class ActionList(object):
                 if handler is None:
                     def new_handler(*args, **kwargs):
 
-                        arg_dict = kwargs.items() + [("name", action_name)] + parameters.items()
+                        arg_dict = list(kwargs.items()) + [("name", action_name)] + list(parameters.items())
                         if board is not None:
                             arg_dict += [("board", board)]
-                        if len(args) == len(variables.keys()):
-                            arg_dict += zip(variables.keys(), args)
-                        elif len(kwargs.keys()) != len(variables.keys()):
-                            print "ERROR: wrong arguments call to action \"%s\" (arguments to be given are \"%s\")"%(action_name, str(variables))
+                        if len(args) == len(list(variables.keys())):
+                            arg_dict += list(zip(list(variables.keys()), args))
+                        elif len(list(kwargs.keys())) != len(list(variables.keys())):
+                            print("ERROR: wrong arguments call to action \"%s\" (arguments to be given are \"%s\")"%(action_name, str(variables)))
 
                         arg_dict = dict(arg_dict)
                         if var_formats is not None:
@@ -147,16 +147,16 @@ class ActionList(object):
 
             elif issubclass(action, lib_program.Program):
                 if handler is None:
-                    print "ERROR: program handler for action \"%s\" must be specified"%action_name
+                    print("ERROR: program handler for action \"%s\" must be specified"%action_name)
                     return
                 selected_list = self.programs
                 subprg = True
             else:
-                print "ERROR: trying to define action \"%s\" with an unrecognized action type (must be \"%s\" or \"%s\")"%(action_name, str(type(lib_action.Action)), str(lib_program.Program))
+                print("ERROR: trying to define action \"%s\" with an unrecognized action type (must be \"%s\" or \"%s\")"%(action_name, str(type(lib_action.Action)), str(lib_program.Program)))
                 return
 
-            var_keys = variables.keys() + ["time"]
-            functions = dict(zip(var_keys, ["x"]*len(var_keys)))
+            var_keys = list(variables.keys()) + ["time"]
+            functions = dict(list(zip(var_keys, ["x"]*len(var_keys))))
 
             selected_list[action_name] = dict()
             selected_list[action_name]["call"] = handler
@@ -182,9 +182,9 @@ class BoardList(object):
         self.system = system
 
     def add(self, board_name, board, address, parameters=None, comment=""):
-        if not self.boards.has_key(board_name):
+        if board_name not in self.boards:
             if not issubclass(board, lib_board.Board):
-                print "WARNING: trying to add board \"%s\" with wrong type (\"%s\" given instead of \"%s\")"%(board_name, str(board), str(lib_board.Board))
+                print("WARNING: trying to add board \"%s\" with wrong type (\"%s\" given instead of \"%s\")"%(board_name, str(board), str(lib_board.Board)))
 
             if parameters is None:
                 parameters = dict()
@@ -193,11 +193,11 @@ class BoardList(object):
                                             comment=str(comment),
                                             **parameters)
         else:
-            print "ERROR: board \"%s\" is already defined"%board_name
+            print("ERROR: board \"%s\" is already defined"%board_name)
             return
 
     def get(self, board_name):
-        if self.boards.has_key(board_name):
+        if board_name in self.boards:
             return self.boards[board_name]
         else:
-            print "ERROR: board \"%s\" not found"%board_name
+            print("ERROR: board \"%s\" not found"%board_name)

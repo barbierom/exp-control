@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -18,9 +18,9 @@
 
 #pylint: disable-msg=E1101
 
-import action as lib_action
-import instruction as lib_instructions
-import ramp as lib_ramp
+from . import action as lib_action
+from . import instruction as lib_instructions
+from . import ramp as lib_ramp
 from copy import copy
 
 class Program(object):
@@ -33,14 +33,14 @@ class Program(object):
         self.system = system
 
     def add(self, time, action_str, *args, **kwargs):
-        if kwargs.has_key("enable"):
+        if "enable" in kwargs:
             enable = bool(kwargs.pop("enable"))
         else:
             enable = True
         time = int(time)
 
         functions = None
-        if "functions" in kwargs.keys():
+        if "functions" in list(kwargs.keys()):
             functions = kwargs["functions"].copy()
             del kwargs["functions"]
         action = self.system.action_list.get(str(action_str), *args, **kwargs)
@@ -65,10 +65,10 @@ class Program(object):
             istr = lib_instructions.Instruction(time, action, enable=enable, parents=self)
             self.instructions[istr.uuid] = istr
         else:
-            print "WARNING: trying to add at time %d of program \"%s\" an action of type \"%s\" (instead of \"%s\" or \"%s\")"%(time, self.name, str(action), str(lib_action.Action), str(Program))
+            print("WARNING: trying to add at time %d of program \"%s\" an action of type \"%s\" (instead of \"%s\" or \"%s\")"%(time, self.name, str(action), str(lib_action.Action), str(Program)))
 
     def get(self, uuid):
-        if self.instructions.has_key(uuid):
+        if uuid in self.instructions:
             return self.instructions[uuid]
         else:
             return None
@@ -92,13 +92,13 @@ class Program(object):
                 i0 = copy(instr)
                 instructs.append(i0)
             else:
-                print "ERROR: wrong action type found for instruction at time %d of program \"%s\" (\"%s\" instead of \"%s\" or \"%s\")"%(instr.time, self.name, str(type(instr.action)), str(lib_action.Action), str(Program))
+                print("ERROR: wrong action type found for instruction at time %d of program \"%s\" (\"%s\" instead of \"%s\" or \"%s\")"%(instr.time, self.name, str(type(instr.action)), str(lib_action.Action), str(Program)))
         instructs.sort()
         return instructs
 
     def get_instructions(self, only_enabled=True):
         instructs = []
-        for instr in self.instructions.values():
+        for instr in list(self.instructions.values()):
             i0 = copy(instr)
             if not bool(only_enabled) or instr.enable:
                 instructs.append(i0)
@@ -138,4 +138,4 @@ class Program(object):
             if inst is not instructs[-1]:
                 to_print += "\n"
 
-        print to_print
+        print(to_print)

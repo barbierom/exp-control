@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -85,7 +85,7 @@ class ProgramOpenDialog(QtGui.QDialog, object):
             if self.prg_name is not None:
                 self.accept()
             elif self.tree.get_selected_cat() is None:
-                print "WARNING: select one name and one category"
+                print("WARNING: select one name and one category")
 
 
 class ProgramSaveDialog(QtGui.QDialog, object):
@@ -143,4 +143,4 @@ class ProgramSaveDialog(QtGui.QDialog, object):
         if self.prg_name is not None and self.categories is not None and len(self.prg_name) > 0:
             self.accept()
         else:
-            print "WARNING: give one name and select one category"
+            print("WARNING: give one name and select one category")

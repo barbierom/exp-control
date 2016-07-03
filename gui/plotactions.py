@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -231,12 +231,12 @@ class PlotActionsDialog(QtGui.QDialog, object):
 
                 var = act["vars"]
                 if len(var) == 1:
-                    var = var.keys()[0]
+                    var = list(var.keys())[0]
                 else:
                     var = None
                 avaiable_acts[name]["var"] = var
 
-        if avaiable_acts.keys() != self.avaiable_acts.keys():
+        if list(avaiable_acts.keys()) != list(self.avaiable_acts.keys()):
             self.avaiable_acts = avaiable_acts
             self.actions_table.set_acts(self.avaiable_acts)
         self.plot()

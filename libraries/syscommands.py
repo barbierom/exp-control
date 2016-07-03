@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -30,32 +30,32 @@ class SysCommand(object):
             time = round(time)
             self._sleep_event.set()
             self._sleep_event = threading.Event()
-            print "CMD: sleep for %.3fms"%time
+            print("CMD: sleep for %.3fms"%time)
             self._sleep_event.wait(time*self._system._time_multiplier)
 
     def wait_end(self, add_time=100):
         if self.running:
             time_sleep = self._system.get_time(self._system.get_program_time())+add_time
-            print "CMD: wait the end of the program"
+            print("CMD: wait the end of the program")
             self.sleep(time_sleep)
 
     def run(self, wait_end=True):
         if self.running:
-            print "CMD: run program"
+            print("CMD: run program")
             self._system.set_program()
             valid = self._system.send_program_and_run()
             if not valid:
-                print "CMD: ERROR while running program"
+                print("CMD: ERROR while running program")
             if wait_end:
                 self.wait_end()
 
     def load(self, prg_name=None):
         if self.running:
             if prg_name is None:
-                print "CMD: load command must specify a program name"
+                print("CMD: load command must specify a program name")
             else:
                 self._system.set_program(prg_name)
-                print "CMD: load %s"%prg_name
+                print("CMD: load %s"%prg_name)
 
     def stop(self):
         if self._thread is not None and self.running:
@@ -66,7 +66,7 @@ class SysCommand(object):
             except RuntimeError:
                 pass
             self._thread = None
-            print "CMD: stopped"
+            print("CMD: stopped")
 
     def set_thread(self, thread):
         if self._thread is None:
@@ -75,16 +75,16 @@ class SysCommand(object):
     def start(self):
         if self._thread is not None and not self.running:
             self.running = True
-            print "CMD: started"
+            print("CMD: started")
             if self._system.main_program is not None:
                 action_name = self._system.main_program.name
                 self._system.action_list.get_cmd(action_name)
             self.running = False
 
     def get_var(self, name):
-        if name not in self._system.variables.keys():
+        if name not in list(self._system.variables.keys()):
             self._system.variables[name] = 0
-            print "WARNING: program variable \"%s\" not found in system, initialized with %d"%(name, self._system.variables[name])
+            print("WARNING: program variable \"%s\" not found in system, initialized with %d"%(name, self._system.variables[name]))
         return self._system.variables[name]
 
     def set_var(self, name, value):

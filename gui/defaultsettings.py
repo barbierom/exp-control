@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -29,13 +29,13 @@ class DefaultProgSettings(object):
             with open(self.config_fname, "wb") as fid:
                 pickle.dump(vars(self), fid)
         except IOError:
-            print "ERROR: error while writing settings into file '" + self.config_fname + "'"
+            print("ERROR: error while writing settings into file '" + self.config_fname + "'")
 
     def load_settings(self):
         try:
             with open(self.config_fname, "rb") as fid:
                 var = pickle.load(fid)
-            for key, val in var.items():
+            for key, val in list(var.items()):
                 setattr(self, key, val)
         except IOError:
-            print "WARNING: no config file '" + self.config_fname + "' found"
+            print("WARNING: no config file '" + self.config_fname + "' found")

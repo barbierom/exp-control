@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -124,7 +124,7 @@ class LineEditDialog(QtGui.QDialog, object):
         self.funct_enable_check = QtGui.QCheckBox()
         self.funct_enable_check.setChecked(not self.prg_action["funct_enable"])
         self.ufuncts_texts = []
-        for ufunct, ufunct_val in sorted(self.prg_action["functions"].items(),
+        for ufunct, ufunct_val in sorted(list(self.prg_action["functions"].items()),
                                          key=lambda func: func[0] if func[0]!="time" else 0):
             label = QtGui.QLabel(ufunct+" (x)")
             edit = QtGui.QLineEdit(ufunct_val)
@@ -143,7 +143,7 @@ class LineEditDialog(QtGui.QDialog, object):
         upars_texts = []
         for upar, upar_val in sorted([("comment", self.prg_action["comment"]),
                                       ("board", self.prg_action["board"])] + \
-                                      self.prg_action["pars"].items()):
+                                      list(self.prg_action["pars"].items())):
             if upar_val != "":
                 label = QtGui.QLabel(upar)
                 edit = QtGui.QLineEdit(str(upar_val))
@@ -231,7 +231,7 @@ class LineEditDialog(QtGui.QDialog, object):
             time = self.system.set_time(fmt(self.time_text.text()))
         except ValueError:
             time = self.prg_action[time_type]
-            print "ERROR: times in the table can be only numbers, %f will be used"%time
+            print("ERROR: times in the table can be only numbers, %f will be used"%time)
 
         self.prg_action[time_type] = time
         self.prg_action["enable"] = not bool(self.enable_check.isChecked())
@@ -247,7 +247,7 @@ class LineEditDialog(QtGui.QDialog, object):
                 uvars[var_n] = fmt(uvars[var_n])
         except ValueError:
             uvars = self.prg_action["vars"]
-            print "ERROR: variables given in a wrong format"
+            print("ERROR: variables given in a wrong format")
         self.prg_action["vars"] = uvars
         self.prg_action["functions"] = ufuncts
 

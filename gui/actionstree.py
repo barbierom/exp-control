@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -75,7 +75,7 @@ class ActionsTree(QtGui.QTreeWidget, object):
             else:
                 return None
         elif len(sel_name) > 1:
-            print "WARNING: select one action"
+            print("WARNING: select one action")
             return None
 
     def parse_dict(self, actions, text=""):
@@ -85,7 +85,7 @@ class ActionsTree(QtGui.QTreeWidget, object):
             if text.lower() in act.lower() and not act.startswith("__"):
                 curr_dict = items
                 for cat in self.system.action_list.get_dict(act)["categories"]:
-                    if not curr_dict.has_key(cat):
+                    if cat not in curr_dict:
                         curr_dict[cat] = dict()
                     curr_dict = curr_dict[cat]
                 curr_dict[act] = None

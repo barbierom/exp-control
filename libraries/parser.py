@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -34,10 +34,10 @@ class Parser(object):
             save_name = os.path.join(path, fname)
 
             if os.path.isfile(save_name):
-                print "deleting program '%s'"%save_name
+                print("deleting program '%s'"%save_name)
                 os.remove(save_name)
             else:
-                print "ERROR: filename '%s' not found"%save_name
+                print("ERROR: filename '%s' not found"%save_name)
             self.system.init_actions()
 
     def read_program_file(self, action_name):
@@ -45,10 +45,10 @@ class Parser(object):
         path, fname = self.get_program_path(action_name, categories)
         fname_path = os.path.join(path, fname)
         if not os.path.isfile(fname_path):
-            print "ERROR: filename '%s' not found"%fname_path
+            print("ERROR: filename '%s' not found"%fname_path)
             return None
         else:
-            print "reading '%s'"%fname_path
+            print("reading '%s'"%fname_path)
 
         prg_str = ""
         with open(fname_path, "r") as fid:
@@ -78,7 +78,7 @@ class Parser(object):
                     for n in range(min(len(version), len(current_version))):
                         valid_version = int(version[n]) == int(current_version[n])
                     if not valid_version:
-                        print "WARNING: outdated saved program version"
+                        print("WARNING: outdated saved program version")
 
             return_match = re.match("^\s*return\s+.*$", line) is not None
             prg_start_match = re.match("^\s*def\s+program.*$", line) is not None
@@ -118,7 +118,7 @@ class Parser(object):
             #check if it is a valid line with add instruction
             m0 = re.match("^\s*prg.add[(]\s*(.*)\s*[)]\s*$", line)
             if m0 is None:
-                print "ERROR: skipping line '%s'"%line
+                print("ERROR: skipping line '%s'"%line)
             else:
                 line = m0.group(1)
 
@@ -144,7 +144,7 @@ class Parser(object):
 
                 #at least time and action must be present
                 if not len(line) >= 2:
-                    print "ERROR: skipping line '%s'"%line
+                    print("ERROR: skipping line '%s'"%line)
                 else:
                     #parse time and action name
                     time = line[0]
@@ -173,7 +173,7 @@ class Parser(object):
                                         elif ar[1] == "False":
                                             enable = False
                                         else:
-                                            print "ERROR: enable value '%s' not valid"%ar[1]
+                                            print("ERROR: enable value '%s' not valid"%ar[1])
                                     else:
                                         #otherwise variable arg
                                         variables.append(ar)
@@ -193,28 +193,28 @@ class Parser(object):
                                             elif m3.group(1) == "False":
                                                 funct_enable = False
                                             else:
-                                                print "ERROR: function enable value '%s' not valid"%m0.group(1)
+                                                print("ERROR: function enable value '%s' not valid"%m0.group(1))
                                         elif m2 is not None and m3 is None:
                                             functions.append(m2.groups())
                                         else:
-                                            print "ERROR: functions of action '%s' not well formatted"%act_name
+                                            print("ERROR: functions of action '%s' not well formatted"%act_name)
                                 else:
-                                    print "ERROR: functions of action '%s' not well formatted"%act_name
+                                    print("ERROR: functions of action '%s' not well formatted"%act_name)
                     functions = dict(functions)
 
                     new_line = self.system.action_list.get_dict(act_name)
                     if new_line is None:
-                        print "ERROR: skipping action '%s' not found in the database"%act_name
+                        print("ERROR: skipping action '%s' not found in the database"%act_name)
                     else:
-                        if len(new_line["vars"].keys()) != len(variables):
-                            print "ERROR: variables '%s' not well formatted in action '%s'"%(str(variables), act_name)
+                        if len(list(new_line["vars"].keys())) != len(variables):
+                            print("ERROR: variables '%s' not well formatted in action '%s'"%(str(variables), act_name))
                         else:
                             for uvar in variables:
                                 if len(variables) > 1 and len(uvar) != 2:
-                                    print "ERROR: wrong variables declaration in action '%s'"%act_name
+                                    print("ERROR: wrong variables declaration in action '%s'"%act_name)
                                 else:
                                     if len(uvar) == 1:
-                                        key = new_line["vars"].keys()[0]
+                                        key = list(new_line["vars"].keys())[0]
                                         value = uvar[0]
                                     else:
                                         key = uvar[0]
@@ -271,7 +271,7 @@ class Parser(object):
                 else:
                     var_l = [var_items[0][1]]
                 line += ", " + ", ".join(var_l)
-            f_items = item["functions"].items()
+            f_items = list(item["functions"].items())
             f_items = [it for it in f_items[:] if re.match("^\s*x?\s*$", it[1]) is None]
             if len(f_items) > 0:
                 line += ", functions=dict("
@@ -304,7 +304,7 @@ class Parser(object):
         path, fname = self.get_program_path(prg_name, categories)
         fname_path = os.path.join(path, fname)
 
-        print "writing '%s'"%fname_path
+        print("writing '%s'"%fname_path)
         if not os.path.exists(path):
             os.makedirs(path)
         with open(fname_path, "w") as fid:
@@ -322,7 +322,7 @@ class Parser(object):
                     directs.append(fold.replace(self.programs_folder, "", 1).strip("/"))
             return directs
         else:
-            print "ERROR: '%s' folder not found"%self.programs_folder
+            print("ERROR: '%s' folder not found"%self.programs_folder)
             return
 
     def fmt_to_type(self, fmt):
@@ -331,7 +331,7 @@ class Parser(object):
         elif "s" in fmt: typ = str
         else:
             typ = str
-            print "WARNING: unrecognized format '%s'"%fmt
+            print("WARNING: unrecognized format '%s'"%fmt)
         return typ
 
     def get_actions_dict(self, only_prg=False):

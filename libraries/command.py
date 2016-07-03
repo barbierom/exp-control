@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -18,13 +18,13 @@
 
 #pylint: disable-msg=E1101
 
-import bit as lib_bit
+from . import bit as lib_bit
 
 class FpgaCommand(object):
     def __init__(self, cmd):
         cmd = str(cmd)
         if not cmd.startswith("0x"):
-            print "ERROR: wrong call to command \"%s\" with string \"%s\""%(str(type(self)), cmd)
+            print("ERROR: wrong call to command \"%s\" with string \"%s\""%(str(type(self)), cmd))
         self.bits = [lib_bit.CommandBits(hex_bits=cmd)]
 
     def get_hex(self):

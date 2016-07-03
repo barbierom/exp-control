@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -19,7 +19,7 @@
 #pylint: disable-msg=E1101
 #pylint: disable-msg=E0611
 
-import program as lib_program
+from . import program as lib_program
 from numpy import linspace, arange
 
 class Ramp(object):
@@ -96,7 +96,7 @@ class LinearRamp(Ramp):
                                int((self.stop_x-self.start_x)/self.step_x))
             else:
                 n_points = 0
-                print "ERROR: wrong call for \"%s\" with name \"%s\""%(str(type(self)), self.name)
+                print("ERROR: wrong call for \"%s\" with name \"%s\""%(str(type(self)), self.name))
 
             t_ramp = arange(self.start_t, self.step_t*n_points, self.step_t)
             if self.act_var_name is not None and None not in [self.start_x, self.step_x]:
@@ -104,10 +104,10 @@ class LinearRamp(Ramp):
             else:
                 x_ramp = t_ramp
         else:
-            print "ERROR: wrong call for \"%s\" with name \"%s\""%(str(type(self)), self.name)
+            print("ERROR: wrong call for \"%s\" with name \"%s\""%(str(type(self)), self.name))
 
         for tval, xval in zip(t_ramp, x_ramp):
-            act_args = self.act_parameters.items()
+            act_args = list(self.act_parameters.items())
             if self.act_var_name is not None:
                 act_args += [(self.act_var_name, xval)]
             act_args = dict(act_args)

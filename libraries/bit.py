@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -32,10 +32,10 @@ class FpgaBits(object):
         elif int_bits is None and bin_bits is None and hex_bits is not None:
             self._set_bits_hex(hex_bits)
         else:
-            print "ERROR: wrong call to bit \"%s\""%str(type(self))
+            print("ERROR: wrong call to bit \"%s\""%str(type(self)))
 
         if self.int_bits > 2**self.bit_num-1:
-            print "ERROR: bit overflow for \"%s\" with string 0x%s"%(str(type(self)), self.hex_bits)
+            print("ERROR: bit overflow for \"%s\" with string 0x%s"%(str(type(self)), self.hex_bits))
 
     def _set_bits_bin(self, bin_bits):
         self.int_bits = int(bin_bits, 2)

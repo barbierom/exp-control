@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -34,17 +34,17 @@ class DigitalBoard(Board):
     def set_status(self, channel, status):
         if channel is not None:
             channel = int(channel)
-            if self.channels.has_key(channel):
+            if channel in self.channels:
                 self.channels[channel]["state"] = bool(status)
             else:
-                print "ERROR: wrong channel selection in Digital board \"%s\", valid channels are %s"%(self.name, str(self.channels.keys()))
+                print("ERROR: wrong channel selection in Digital board \"%s\", valid channels are %s"%(self.name, str(list(self.channels.keys()))))
         else:
-            channels = self.channels.keys()
+            channels = list(self.channels.keys())
             for chn in channels:
                 self.channels[chn]["state"] = bool(status)
 
         string_bin = ""
-        channels = self.channels.keys()
+        channels = list(self.channels.keys())
         channels.sort(reverse=True)
         for chn in channels:
             if self.channels[chn]["state"]:

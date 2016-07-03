@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -18,7 +18,7 @@
 
 #pylint: disable-msg=E1101
 
-import board as lib_board
+from . import board as lib_board
 
 class Action(object):
     def __init__(self, system, name, comment=""):
@@ -35,7 +35,7 @@ class DataAction(Action):
         super(DataAction, self).__init__(system, name, comment)
 
         if not isinstance(board, lib_board.Board):
-            print "WARNING: action \"%s\" does not specify a valid board"%self.name
+            print("WARNING: action \"%s\" does not specify a valid board"%self.name)
         self.board = board
         self.command_bits = 0b00000000
 
@@ -56,12 +56,12 @@ class DigitalAction(DataAction):
             for stt in status:
                 self.status.append(bool(stt))
         else:
-            print "ERROR: digital action \"%s\" does not have corrinspondence between channels and states"%self.name
+            print("ERROR: digital action \"%s\" does not have corrinspondence between channels and states"%self.name)
 
     def do_action(self):
         data = 0
         if len(self.status) == 0:
-            print "WARNING: digital action \"%s\" does not specify any channel, data is initialized to %d"%(self.name, data)
+            print("WARNING: digital action \"%s\" does not specify any channel, data is initialized to %d"%(self.name, data))
 
         for ch_st in zip(self.channel, self.status):
             data = self.board.set_status(ch_st[0], ch_st[1])
@@ -106,12 +106,12 @@ class DdsAction(DataAction):
             data = self.board.set_lut(self.n_lut)
         else:
             data = 0
-            print "WARNING: call to DDS action \"%s\" is not implemented, data is initialized to %d"%(self.name, data)
+            print("WARNING: call to DDS action \"%s\" is not implemented, data is initialized to %d"%(self.name, data))
 
         if self.board.model == "AD9958" and self.board.firmware == "S":
             if data > 0b0000001111111111:
                 data = 0
-                print "ERROR: data in DDS action \"%s\" is out of range, data is initialized to %d"%(self.name, data)
+                print("ERROR: data in DDS action \"%s\" is out of range, data is initialized to %d"%(self.name, data))
             if not self.realtime:
                 data += 0b0000010000000000 #TODO: check if it works
             if self.trigger:
@@ -119,7 +119,7 @@ class DdsAction(DataAction):
             if self.read_data:
                 data += 0b0100000000000000
         else:
-            print "ERROR: DDS action \"%s\" is not completed since DDS model \"%s\" with firmware \"%s\" is not implemented"%(self.name, self.board.model, self.board.firmware)
+            print("ERROR: DDS action \"%s\" is not completed since DDS model \"%s\" with firmware \"%s\" is not implemented"%(self.name, self.board.model, self.board.firmware))
 
         return data
 
@@ -138,7 +138,7 @@ class AnalogAction(DataAction):
             data = self.board.set_value(self.value)
         else:
             data = 0
-            print "WARNING: call to analog action \"%s\" is not implemented, data is initialized to %d"%(self.name, data)
+            print("WARNING: call to analog action \"%s\" is not implemented, data is initialized to %d"%(self.name, data))
 
         if self.bipolar:
             #TODO: check two's complement
@@ -149,7 +149,7 @@ class AnalogAction(DataAction):
 
         if data > (2**self.board.dac_bits-1):
             data = (2**self.board.dac_bits-1)
-            print "ERROR: data in analog action \"%s\" is out of range, data is initialized to %d"%(self.name, data)
+            print("ERROR: data in analog action \"%s\" is out of range, data is initialized to %d"%(self.name, data))
 
         return data
 

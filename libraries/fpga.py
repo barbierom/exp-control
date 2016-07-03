@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -20,7 +20,7 @@
 
 import pylibftdi
 import time
-import command as lib_command
+from . import command as lib_command
 
 class Fpga(object):
     def __init__(self, device_index=0):
@@ -34,7 +34,7 @@ class Fpga(object):
 
         valid = False
         if len(hex_cmd_string)%2 != 0:
-            print "ERROR: commands are not well formatted, length of the hex string must be even (%d instead)"%len(hex_cmd_string)
+            print("ERROR: commands are not well formatted, length of the hex string must be even (%d instead)"%len(hex_cmd_string))
         else:
             comm_encoded = ""
             n_bytes = int(len(hex_cmd_string)/2)
@@ -46,7 +46,7 @@ class Fpga(object):
                 self.device.write(comm_encoded)
                 valid = True
             except pylibftdi.FtdiError:
-                print "ERROR: FPGA not found, reload the list"
+                print("ERROR: FPGA not found, reload the list")
         return valid
 
     def send_program_and_run(self, commands):
@@ -68,14 +68,14 @@ class Fpga(object):
         n_iter = 0
         while renspose == "":
             if n_iter > 100:
-                print "WARNING: FPGA is not rensponding to status request"
+                print("WARNING: FPGA is not rensponding to status request")
                 renspose = chr(0)
                 break
             try:
                 renspose = self.device.read(6)
             except pylibftdi.FtdiError:
                 if valid:
-                    print "ERROR: FPGA not found, reload the list"
+                    print("ERROR: FPGA not found, reload the list")
                 renspose = chr(0)
             n_iter += 1
 

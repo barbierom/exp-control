@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -170,7 +170,7 @@ class ProgramEditWidget(QtGui.QWidget, object):
             self.relative_box.setEnabled(True)
             self.extended_box.setEnabled(True)
         else:
-            print "ERROR: internal dialogs error"
+            print("ERROR: internal dialogs error")
 
     def on_hide_disabled(self, evt=None):
         self.table.hide_disabled = bool(self.hide_disabled_box.isChecked())

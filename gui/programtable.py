@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015-2016  Simone Donadello
@@ -88,16 +88,16 @@ class ProgramTable(QtGui.QTableWidget, object):
     def clear_prg_from_memory(self, prg_name=None):
         if prg_name is None:
             prg_name = self.prg_name
-        if self.subprg.has_key(prg_name):
+        if prg_name in self.subprg:
             del self.subprg[prg_name]
-            print "clearing program '%s'"%prg_name
+            print("clearing program '%s'"%prg_name)
 
     def prg_list(self):
-        if self.subprg.has_key(self.prg_name):
+        if self.prg_name in self.subprg:
             return self.subprg[self.prg_name]
         else:
             if self.prg_name is not None:
-                print "ERROR: program '%s' not found in the internal database"%self.prg_name
+                print("ERROR: program '%s' not found in the internal database"%self.prg_name)
             return []
 
     def categories(self):
@@ -106,7 +106,7 @@ class ProgramTable(QtGui.QTableWidget, object):
             return itm["categories"]
         else:
             if self.prg_name is not None:
-                print "ERROR: program '%s' not found in the internal database"%self.prg_name
+                print("ERROR: program '%s' not found in the internal database"%self.prg_name)
             return []
 
     def add_dialog(self):
@@ -129,7 +129,7 @@ class ProgramTable(QtGui.QTableWidget, object):
             else:
                 self.prg_comment = None
 
-        if self.subprg.has_key(self.prg_name):
+        if self.prg_name in self.subprg:
             prg_list = self.subprg[self.prg_name]
         else:
             if self.system.action_list.is_program(self.prg_name):
@@ -139,7 +139,7 @@ class ProgramTable(QtGui.QTableWidget, object):
             else:
                 prg_list = []
                 if  self.prg_name is not None:
-                    print "WARNING: program '%s' not found, creating an empty program"%self.prg_name
+                    print("WARNING: program '%s' not found, creating an empty program"%self.prg_name)
                     self.open_prg(prg_name=None)
                     return
 
@@ -229,7 +229,7 @@ class ProgramTable(QtGui.QTableWidget, object):
                         new_item.setFont(font)
 
                     is_f = False
-                    for kk in row["functions"].keys():
+                    for kk in list(row["functions"].keys()):
                         if re.match("^\s*x?$", row["functions"][kk]) is None:
                             is_f = True
                     if is_f and row["funct_enable"]:
@@ -261,7 +261,7 @@ class ProgramTable(QtGui.QTableWidget, object):
                 itm["parents"] = parents
 
                 if extended and itm["is_subprg"]:
-                    if not self.subprg.has_key(itm["name"]) \
+                    if itm["name"] not in self.subprg \
                             and self.system.action_list.is_program(itm["name"]):
                         self.subprg[itm["name"]], _ = self.system.parser.read_program_file(itm["name"])
                     elif self.system.action_list.is_ramp(itm["name"]):
@@ -275,7 +275,7 @@ class ProgramTable(QtGui.QTableWidget, object):
                                              enable_parent=itm["enable_parent"],
                                              parents=itm["parents"])
                     else:
-                        print "ERROR: infinite recursion for subprogram '%s'"%itm["name"]
+                        print("ERROR: infinite recursion for subprogram '%s'"%itm["name"])
                         items = []
                 else:
                     items = [itm]
@@ -320,7 +320,7 @@ class ProgramTable(QtGui.QTableWidget, object):
                         fmt = self.system.parser.fmt_to_type(fmt_str)
                         value = self.system.set_time(fmt(value))
                     except ValueError:
-                        print "ERROR: wrong time input format in table"
+                        print("ERROR: wrong time input format in table")
                         set_value = False
 
                 elif col_name == "vars":
@@ -331,13 +331,13 @@ class ProgramTable(QtGui.QTableWidget, object):
                         for new_v in new_vars:
                             uvar = [v.strip() for v in new_v.split("=")]
                             if len(uvar) == 1 and len(old_vars) == 1:
-                                key = old_vars.keys()[0]
+                                key = list(old_vars.keys())[0]
                                 var_value = uvar[0]
-                            elif old_vars.has_key(uvar[0]):
+                            elif uvar[0] in old_vars:
                                 key = uvar[0]
                                 var_value = uvar[1]
                             else:
-                                print "ERROR: wrong variable input name in table"
+                                print("ERROR: wrong variable input name in table")
                                 set_value = False
 
                             if key in self.prg_list()[row]["var_formats"]:
@@ -348,16 +348,16 @@ class ProgramTable(QtGui.QTableWidget, object):
                             try:
                                 value[key] = fmt(var_value)
                             except ValueError:
-                                print "ERROR: wrong variable input format in table"
+                                print("ERROR: wrong variable input format in table")
                                 set_value = False
                     else:
-                        print "ERROR: wrong variable input format in table"
+                        print("ERROR: wrong variable input format in table")
                         set_value = False
 
             elif widget is not None and col_name == "enable":
                 value = not bool(widget.isChecked())
             else:
-                print "ERROR: internal error while reading table cells"
+                print("ERROR: internal error while reading table cells")
                 set_value = False
 
             if set_value:
@@ -434,7 +434,7 @@ class ProgramTable(QtGui.QTableWidget, object):
                 if len(rows) == 1:
                     row = rows[0] + 1
                 elif len(rows) != 0:
-                    print "ERROR: select one line in relative mode insertion"
+                    print("ERROR: select one line in relative mode insertion")
                     return
 
             self.prg_list().insert(row, action)
@@ -463,7 +463,7 @@ class ProgramTable(QtGui.QTableWidget, object):
             elif not comment and not uncomment and toggle:
                 state = None
             else:
-                print "ERROR: internal error in line comments"
+                print("ERROR: internal error in line comments")
                 return
 
             for row in sel_rows:
@@ -484,15 +484,15 @@ class ProgramTable(QtGui.QTableWidget, object):
                 if prg_name is None or prg_name in self.system.action_list.tot_list():
                     self.open_prg(prg_name=prg_name)
                 else:
-                    print "ERROR: program '%s' not found in the database"%prg_name
+                    print("ERROR: program '%s' not found in the database"%prg_name)
 
             win.accepted.connect(partial(on_accepted, win=win))
             win.show()
         else:
             if prg_name is not None:
-                print "opening program '%s'"%prg_name
+                print("opening program '%s'"%prg_name)
             else:
-                print "opening a new program"
+                print("opening a new program")
             self.clear_prg_from_memory()
             self.set_data(prg_name=prg_name, new_prg=prg_name is None)
             self.program_opened.emit(self.prg_name, self.prg_comment)
@@ -542,7 +542,7 @@ class ProgramTable(QtGui.QTableWidget, object):
 
     def on_direct_run(self, action=None):
         if action is not None:
-            print "direct run for action '%s'"%action["name"]
+            print("direct run for action '%s'"%action["name"])
             action["time"] = self.system.set_time(0.0)
             if action["is_subprg"]:
                 acts = self.get_all(lst=[action],
@@ -567,7 +567,7 @@ class ProgramTable(QtGui.QTableWidget, object):
             prg_name = win.prg_name
             categories = win.categories
             confirm = True
-            if self.system.action_list.tot_list().has_key(prg_name):
+            if prg_name in self.system.action_list.tot_list():
                 old_categories = self.system.action_list.get_dict(prg_name)["categories"]
                 if categories == old_categories:
                     msg = "An action named '%s' is already saved in '%s', are you shure to overwrite it?"%\
@@ -612,9 +612,9 @@ class ProgramTable(QtGui.QTableWidget, object):
                               prg_comment=self.prg_comment,
                               cmd_str=self.cmd_str)
         elif prg_list is None or categories is None:
-            print "ERROR: internal error while calling save function"
+            print("ERROR: internal error while calling save function")
         else:
-            print "saving program '%s'"%prg_name
+            print("saving program '%s'"%prg_name)
             self.system.parser.write_program_file(prg_name, categories, prg_list, prg_comment, cmd_str)
             self.actions_updated.emit()
 
