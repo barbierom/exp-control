@@ -18,8 +18,15 @@
 
 #pylint: disable-msg=E1101
 
-from . import action as lib_action
-from . import program as lib_program
+'''moved to the bottom
+#from . import action as lib_action
+#from . import program as lib_program
+'''
+'''Unbelievably dirty fix:'''
+import sys
+lib_action = sys.modules['libraries.action']
+lib_program = sys.modules['libraries.program']
+
 import uuid as uuid_lib
 
 class Instruction(object):

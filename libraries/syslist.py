@@ -21,11 +21,17 @@
 from . import action as lib_action
 from . import program as lib_program
 from . import board as lib_board
-from . import system as lib_system
+'''removed to avoid cyclic imports
+#from . import system as lib_system
+'''
 from . import ramp as lib_ramp
 
+
 class ActionList(object):
-    def __init__(self, system=None):
+    def __init__(self, system=None):        
+        ''' added to fix cyclic imports'''
+        from libraries import system as lib_system
+        
         self.actions = dict()
         self.programs = dict()
         self.ramps = dict()

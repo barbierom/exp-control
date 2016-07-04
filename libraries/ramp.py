@@ -19,7 +19,9 @@
 #pylint: disable-msg=E1101
 #pylint: disable-msg=E0611
 
-from . import program as lib_program
+'''removed to avoid cyclic imports
+#from . import program as lib_program
+'''
 from numpy import linspace, arange
 
 class Ramp(object):

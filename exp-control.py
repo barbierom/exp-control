@@ -32,9 +32,7 @@ from gui.constants import PRG_NAME, PRG_VERSION
 def main(args):
 
     system = System()
-
     app = QtGui.QApplication(args)
-
     win = gui.programwindow.ProgramEditWindow(system=system)
 
     win.setWindowTitle("%s (%s)" % (PRG_NAME, PRG_VERSION))

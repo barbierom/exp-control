@@ -18,6 +18,8 @@
 
 #pylint: disable-msg=E1101
 
+'''imports sorted alphabetically'''
+
 from . import action as lib_action
 from . import instruction as lib_instructions
 from . import ramp as lib_ramp

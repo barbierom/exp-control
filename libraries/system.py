@@ -20,16 +20,23 @@
 
 import pylibftdi, threading
 
-import libraries.parser as lib_parser
-import libraries.syscommands as lib_syscommand
-import libraries.command as lib_command
-import libraries.syslist as lib_syslist
-import libraries.instruction as lib_instruction
-import libraries.fpga as lib_fpga
+'''imports sorted alphabetically'''
+
 import libraries.action as lib_action
+import libraries.command as lib_command
+import libraries.fpga as lib_fpga
+from libraries import init_boards, init_actions
+from libraries import init_programs
+import libraries.instruction as lib_instruction
+import libraries.parser as lib_parser
 import libraries.program as lib_program
 import libraries.ramp as lib_ramp
-from libraries import init_boards, init_actions, init_programs
+import libraries.syscommands as lib_syscommand
+import libraries.syslist as lib_syslist
+
+
+
+
 import os, sys
 
 #change path
