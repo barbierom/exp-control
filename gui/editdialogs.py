@@ -23,15 +23,14 @@ from functools import partial
 from gui.constants import GREEN, BLUE, PRG_NAME
 import gui.programwidget
 
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+from PyQt5 import QtCore, QtWidgets
 
-class ProgramEditDialog(QtGui.QDialog, object):
+class ProgramEditDialog(QtWidgets.QDialog, object):
 
     def __init__(self, prg_name, par_table,
                  ramp_vars=None, extended_view=None, parent=None, system=None):
         super(ProgramEditDialog, self).__init__(parent)
-        layout = QtGui.QVBoxLayout(self)
+        layout = QtWidgets.QVBoxLayout(self)
         self.system = system
 
         edit_wdg = gui.programwidget.ProgramEditWidget(prg_name=prg_name,
@@ -45,19 +44,19 @@ class ProgramEditDialog(QtGui.QDialog, object):
 
         layout.addWidget(edit_wdg)
 
-        sublayout = QtGui.QHBoxLayout()
-        save_button = QtGui.QPushButton("Save")
+        sublayout = QtWidgets.QHBoxLayout()
+        save_button = QtWidgets.QPushButton("Save")
         save_button.setStyleSheet("color: %s"%GREEN)
         save_button.setToolTip("save current program")
         if extended_view is not None and extended_view:
             save_button.setEnabled(False)
         sublayout.addWidget(save_button)
-        save_as_button = QtGui.QPushButton("Save as")
+        save_as_button = QtWidgets.QPushButton("Save as")
         save_as_button.setStyleSheet("color: %s"%GREEN)
         save_as_button.setToolTip("save current program with a new name")
         sublayout.addWidget(save_as_button)
         save_button.setDefault(True)
-        cancel_button = QtGui.QPushButton("Cancel")
+        cancel_button = QtWidgets.QPushButton("Cancel")
         cancel_button.setToolTip("close and do nothing")
         sublayout.addWidget(cancel_button)
 
@@ -94,7 +93,7 @@ class ProgramEditDialog(QtGui.QDialog, object):
             self.par_table.set_data()
 
 
-class LineEditDialog(QtGui.QDialog, object):
+class LineEditDialog(QtWidgets.QDialog, object):
 
     direct_run = QtCore.pyqtSignal(dict)
 
@@ -106,38 +105,38 @@ class LineEditDialog(QtGui.QDialog, object):
         self.prg_action = prg_action
         self.relative_view = par_table.relative_view
 
-        layout0 = QtGui.QVBoxLayout(self)
+        layout0 = QtWidgets.QVBoxLayout(self)
 
-        tab_widget = QtGui.QTabWidget(self)
+        tab_widget = QtWidgets.QTabWidget(self)
         layout0.addWidget(tab_widget)
 
-        tab1 = QtGui.QWidget()
-        tab2 = QtGui.QWidget()
-        tab3 = QtGui.QWidget()
-        layout1 = QtGui.QVBoxLayout(tab1)
-        layout2 = QtGui.QVBoxLayout(tab2)
-        layout3 = QtGui.QVBoxLayout(tab3)
+        tab1 = QtWidgets.QWidget()
+        tab2 = QtWidgets.QWidget()
+        tab3 = QtWidgets.QWidget()
+        layout1 = QtWidgets.QVBoxLayout(tab1)
+        layout2 = QtWidgets.QVBoxLayout(tab2)
+        layout3 = QtWidgets.QVBoxLayout(tab3)
         tab_widget.addTab(tab1, "variables")
         tab_widget.addTab(tab2, "functions")
         tab_widget.addTab(tab3, "details")
 
-        self.funct_enable_check = QtGui.QCheckBox()
+        self.funct_enable_check = QtWidgets.QCheckBox()
         self.funct_enable_check.setChecked(not self.prg_action["funct_enable"])
         self.ufuncts_texts = []
         for ufunct, ufunct_val in sorted(list(self.prg_action["functions"].items()),
                                          key=lambda func: func[0] if func[0]!="time" else 0):
-            label = QtGui.QLabel(ufunct+" (x)")
-            edit = QtGui.QLineEdit(ufunct_val)
+            label = QtWidgets.QLabel(ufunct+" (x)")
+            edit = QtWidgets.QLineEdit(ufunct_val)
             self.ufuncts_texts.append((label, edit, ufunct))
 
         self.uvars_texts = []
         for uvar, uvar_val in sorted(self.prg_action["vars"].items()):
-            label = QtGui.QLabel(uvar)
+            label = QtWidgets.QLabel(uvar)
             if uvar in self.prg_action["var_formats"]:
                 fmt = self.prg_action["var_formats"][uvar]
             else:
                 fmt = "%s"
-            edit = QtGui.QLineEdit(fmt%uvar_val)
+            edit = QtWidgets.QLineEdit(fmt%uvar_val)
             self.uvars_texts.append((label, edit, uvar))
 
         upars_texts = []
@@ -145,56 +144,56 @@ class LineEditDialog(QtGui.QDialog, object):
                                       ("board", self.prg_action["board"])] + \
                                       list(self.prg_action["pars"].items())):
             if upar_val != "":
-                label = QtGui.QLabel(upar)
-                edit = QtGui.QLineEdit(str(upar_val))
+                label = QtWidgets.QLabel(upar)
+                edit = QtWidgets.QLineEdit(str(upar_val))
                 edit.setEnabled(False)
                 edit.setToolTip(str(upar_val))
                 upars_texts.append((label, edit, upar))
 
         if self.relative_view:
-            self.time_text = QtGui.QLineEdit(self.system.time_formats["time_rel"]%\
+            self.time_text = QtWidgets.QLineEdit(self.system.time_formats["time_rel"]%\
                                                  self.system.get_time(self.prg_action["time_rel"]))
             self.time_text.setToolTip("time relative to the action selected in the table")
-            time_label = QtGui.QLabel("time (rel)")
+            time_label = QtWidgets.QLabel("time (rel)")
         else:
-            self.time_text = QtGui.QLineEdit(self.system.time_formats["time"]%\
+            self.time_text = QtWidgets.QLineEdit(self.system.time_formats["time"]%\
                                                  self.system.get_time(self.prg_action["time"]))
-            time_label = QtGui.QLabel("time (abs)")
+            time_label = QtWidgets.QLabel("time (abs)")
 
-        self.enable_check = QtGui.QCheckBox()
+        self.enable_check = QtWidgets.QCheckBox()
         self.enable_check.setChecked(not self.prg_action["enable"])
 
-        vars_layout = QtGui.QGridLayout()
+        vars_layout = QtWidgets.QGridLayout()
         for uvar_n, uvar in enumerate([(time_label, self.time_text, None)] +\
                                        self.uvars_texts +\
-                                       [(QtGui.QLabel("disabled"), self.enable_check, None)]):
+                                       [(QtWidgets.QLabel("disabled"), self.enable_check, None)]):
             vars_layout.addWidget(uvar[0], uvar_n, 0, 1, 1)
             vars_layout.addWidget(uvar[1], uvar_n, 1, 1, 2)
         layout1.addLayout(vars_layout)
 
-        functs_layout = QtGui.QGridLayout()
+        functs_layout = QtWidgets.QGridLayout()
         for ufunct_n, ufunct in enumerate(self.ufuncts_texts):
             functs_layout.addWidget(ufunct[0], ufunct_n, 0, 1, 1)
             functs_layout.addWidget(ufunct[1], ufunct_n, 1, 1, 2)
-        functs_layout.addWidget(QtGui.QLabel("disabled f"), ufunct_n+1, 0, 1, 1)
+        functs_layout.addWidget(QtWidgets.QLabel("disabled f"), ufunct_n+1, 0, 1, 1)
         functs_layout.addWidget(self.funct_enable_check, ufunct_n+1, 1, 1, 2)
         layout2.addLayout(functs_layout)
 
-        pars_layout = QtGui.QGridLayout()
+        pars_layout = QtWidgets.QGridLayout()
         for upar_n, upar in enumerate(upars_texts):
             pars_layout.addWidget(upar[0], upar_n, 0, 1, 1)
             pars_layout.addWidget(upar[1], upar_n, 1, 1, 2)
         layout3.addLayout(pars_layout)
 
-        ok_button = QtGui.QPushButton("Insert")
+        ok_button = QtWidgets.QPushButton("Insert")
         ok_button.setStyleSheet("color: %s"%GREEN)
         ok_button.setToolTip("add the action to the current program")
         layout0.addWidget(ok_button)
         ok_button.setDefault(True)
-        cancel_button = QtGui.QPushButton("Cancel")
+        cancel_button = QtWidgets.QPushButton("Cancel")
         cancel_button.setToolTip("close and do nothing")
         layout0.addWidget(cancel_button)
-        direct_run_button = QtGui.QPushButton("Direct Run")
+        direct_run_button = QtWidgets.QPushButton("Direct Run")
         direct_run_button.setStyleSheet("color: %s"%BLUE)
         direct_run_button.setToolTip("run this action directly on the FPGA")
         layout0.addWidget(direct_run_button)

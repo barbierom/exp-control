@@ -24,11 +24,10 @@ import re
 import gui.editdialogs
 import gui.opensavedialogs
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt5 import QtCore, QtWidgets
 
 
-class ProgramTable(QtGui.QTableWidget, object):
+class ProgramTable(QtWidgets.QTableWidget, object):
 
     program_opened = QtCore.pyqtSignal(object, object)
     program_sent = QtCore.pyqtSignal(bool)
@@ -166,19 +165,19 @@ class ProgramTable(QtGui.QTableWidget, object):
                 cell = row[key]
 
                 if key == "enable":
-                    checkbox = QtGui.QCheckBox()
+                    checkbox = QtWidgets.QCheckBox()
                     checkbox.setChecked(not cell)
                     checkbox.stateChanged.connect(partial(self.on_cell_changed, n_row, n_key))
                     checkbox.setToolTip("disable action")
                     self.setCellWidget(n_row, n_key, checkbox)
                 elif key == "is_subprg":
                     if cell:
-                        button = QtGui.QPushButton("s")
+                        button = QtWidgets.QPushButton("s")
                         button.clicked.connect(partial(self.on_open_subprg, row=n_row))
                         button.setToolTip("edit subprogram")
                         self.setCellWidget(n_row, n_key, button)
                     else:
-                        self.setCellWidget(n_row, n_key, QtGui.QWidget())
+                        self.setCellWidget(n_row, n_key, QtWidgets.QWidget())
                 else:
                     if key == "vars":
                         cell_list = sorted(cell.items())
@@ -211,7 +210,7 @@ class ProgramTable(QtGui.QTableWidget, object):
                             cell = self.system.time_formats["time"]%\
                                             self.system.get_time(row["time"])
 
-                    new_item = QtGui.QTableWidgetItem(str(cell))
+                    new_item = QtWidgets.QTableWidgetItem(str(cell))
                     new_item.setToolTip(str(cell))
 
                     if key in ["time", "vars"]:
@@ -224,7 +223,7 @@ class ProgramTable(QtGui.QTableWidget, object):
 
                     if self.extended_view and not row["enable_parent"]:
                         new_item.setBackgroundColor(QtCore.Qt.lightGray)
-                        font = QtGui.QFont()
+                        font = QtWidgets.QFont()
                         font.setItalic(True)
                         new_item.setFont(font)
 
@@ -233,7 +232,7 @@ class ProgramTable(QtGui.QTableWidget, object):
                         if re.match("^\s*x?$", row["functions"][kk]) is None:
                             is_f = True
                     if is_f and row["funct_enable"]:
-                        font = QtGui.QFont()
+                        font = QtWidgets.QFont()
                         font.setBold(True)
                         new_item.setFont(font)
 
@@ -522,11 +521,11 @@ class ProgramTable(QtGui.QTableWidget, object):
         for state in status:
             tot_state = tot_state and not state.running
         if not tot_state:
-            reply = QtGui.QMessageBox.question(self, 'FPGA warning',
+            reply = QtWidgets.QMessageBox.question(self, 'FPGA warning',
                                                "Another program is running on one or more FPGAs,\nare you shure to launch a new one?",
-                                               QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
-                                               QtGui.QMessageBox.No)
-            tot_state = reply == QtGui.QMessageBox.Yes
+                                               QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                                               QtWidgets.QMessageBox.No)
+            tot_state = reply == QtWidgets.QMessageBox.Yes
 
         if tot_state:
             if prg_name is None:
@@ -578,11 +577,11 @@ class ProgramTable(QtGui.QTableWidget, object):
                            (prg_name,
                             "/".join(old_categories),
                             "/".join(categories))
-                reply = QtGui.QMessageBox.question(self, 'Action conflict',
+                reply = QtWidgets.QMessageBox.question(self, 'Action conflict',
                                                    msg,
-                                                   QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
-                                                   QtGui.QMessageBox.No)
-                confirm = reply == QtGui.QMessageBox.Yes
+                                                   QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                                                   QtWidgets.QMessageBox.No)
+                confirm = reply == QtWidgets.QMessageBox.Yes
 
             if confirm:
                 prg_list = self.prg_list()

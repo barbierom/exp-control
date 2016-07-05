@@ -23,11 +23,10 @@ from functools import partial
 from gui.constants import GREEN
 import gui.actionstree
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt5 import QtCore, QtWidgets
 
 
-class ProgramOpenDialog(QtGui.QDialog, object):
+class ProgramOpenDialog(QtWidgets.QDialog, object):
 
     def __init__(self, parent=None, system=None):
         super(ProgramOpenDialog, self).__init__(parent)
@@ -36,12 +35,12 @@ class ProgramOpenDialog(QtGui.QDialog, object):
         self.tree = gui.actionstree.ActionsTree(only_prg=True, parent=self, system=self.system)
         self.prg_name = None
 
-        layout = QtGui.QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
 
-        sublayout = QtGui.QHBoxLayout()
+        sublayout = QtWidgets.QHBoxLayout()
 
-        find_text = QtGui.QLineEdit()
+        find_text = QtWidgets.QLineEdit()
         find_text.setPlaceholderText("search...")
         find_text.setToolTip("filter programs by name")
         find_text.textChanged.connect(self.on_filter_actions)
@@ -50,11 +49,11 @@ class ProgramOpenDialog(QtGui.QDialog, object):
         layout.addWidget(self.tree)
         layout.addLayout(sublayout)
 
-        ok_button = QtGui.QPushButton("Open")
+        ok_button = QtWidgets.QPushButton("Open")
         ok_button.setToolTip("open the selected program")
-        cancel_button = QtGui.QPushButton("Cancel")
+        cancel_button = QtWidgets.QPushButton("Cancel")
         cancel_button.setToolTip("close and do nothing")
-        empty_button = QtGui.QPushButton("New program")
+        empty_button = QtWidgets.QPushButton("New program")
         empty_button.setToolTip("open a new empty program")
 
         sublayout.addWidget(ok_button)
@@ -88,7 +87,7 @@ class ProgramOpenDialog(QtGui.QDialog, object):
                 print("WARNING: select one name and one category")
 
 
-class ProgramSaveDialog(QtGui.QDialog, object):
+class ProgramSaveDialog(QtWidgets.QDialog, object):
 
     def __init__(self, prg_name, categories, parent=None, system=None):
         super(ProgramSaveDialog, self).__init__(parent)
@@ -96,29 +95,29 @@ class ProgramSaveDialog(QtGui.QDialog, object):
         self.prg_name = None
         self.categories = None
 
-        layout = QtGui.QGridLayout()
+        layout = QtWidgets.QGridLayout()
         self.setLayout(layout)
-        self.prg_name_text = QtGui.QLineEdit()
+        self.prg_name_text = QtWidgets.QLineEdit()
         if prg_name is not None:
             self.prg_name_text.setText(prg_name)
 
-        self.cat_list = QtGui.QListWidget(self)
+        self.cat_list = QtWidgets.QListWidget(self)
         for categ in system.parser.get_programs_dirs():
-            self.cat_list.addItem(QtGui.QListWidgetItem(categ))
+            self.cat_list.addItem(QtWidgets.QListWidgetItem(categ))
         sel_index = 0
         curr_cat = "/".join(categories)
         if curr_cat in system.parser.get_programs_dirs():
             sel_index = system.parser.get_programs_dirs().index(curr_cat)
         self.cat_list.setCurrentRow(sel_index)
 
-        layout.addWidget(QtGui.QLabel("category"), 0, 0, 1, 1)
-        layout.addWidget(QtGui.QLabel("name"), 2, 0, 1, 1)
+        layout.addWidget(QtWidgets.QLabel("category"), 0, 0, 1, 1)
+        layout.addWidget(QtWidgets.QLabel("name"), 2, 0, 1, 1)
         layout.addWidget(self.prg_name_text, 2, 1, 1, 1)
 
-        ok_button = QtGui.QPushButton("Save")
+        ok_button = QtWidgets.QPushButton("Save")
         ok_button.setStyleSheet("color: %s"%GREEN)
         ok_button.setToolTip("save the program with given name in the selected category")
-        cancel_button = QtGui.QPushButton("Cancel")
+        cancel_button = QtWidgets.QPushButton("Cancel")
         cancel_button.setToolTip("close and do nothing")
 
         layout.addWidget(ok_button, 3, 0, 1, 2)

@@ -23,7 +23,7 @@ import sys, os
 #change path
 os.chdir(os.path.dirname(os.path.abspath(sys.argv[0])))
 
-import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QApplication
 
 from libraries.system import System
 import gui.programwindow
@@ -32,7 +32,7 @@ from gui.constants import PRG_NAME, PRG_VERSION
 def main(args):
 
     system = System()
-    app = QtGui.QApplication(args)
+    app = QApplication(args)
     win = gui.programwindow.ProgramEditWindow(system=system)
 
     win.setWindowTitle("%s (%s)" % (PRG_NAME, PRG_VERSION))

@@ -24,9 +24,9 @@ from gui.constants import RED
 import gui.programtable
 import gui.actionstree
 
-import PyQt4.QtGui as QtGui
+from PyQt5 import QtWidgets
 
-class ProgramEditWidget(QtGui.QWidget, object):
+class ProgramEditWidget(QtWidgets.QWidget, object):
 
     def __init__(self, prg_name=None, par_table=None, ramp_vars=None,
                  extended_view=None, parent=None, system=None):
@@ -41,11 +41,11 @@ class ProgramEditWidget(QtGui.QWidget, object):
 
         self.table.setMinimumWidth(500)
 
-        main_layout = QtGui.QHBoxLayout()
-        center_widget = QtGui.QWidget(self)
-        left_widget = QtGui.QWidget(self)
-        left_layout = QtGui.QVBoxLayout(left_widget)
-        center_layout = QtGui.QVBoxLayout(center_widget)
+        main_layout = QtWidgets.QHBoxLayout()
+        center_widget = QtWidgets.QWidget(self)
+        left_widget = QtWidgets.QWidget(self)
+        left_layout = QtWidgets.QVBoxLayout(left_widget)
+        center_layout = QtWidgets.QVBoxLayout(center_widget)
         main_layout.addWidget(left_widget)
         main_layout.addWidget(center_widget)
 
@@ -58,18 +58,18 @@ class ProgramEditWidget(QtGui.QWidget, object):
                                                               parent=self,
                                                               system=self.system)
 
-        self.title_label = QtGui.QLabel("")
+        self.title_label = QtWidgets.QLabel("")
         left_layout.addWidget(self.title_label)
-        self.comment_label = QtGui.QLabel("")
+        self.comment_label = QtWidgets.QLabel("")
         left_layout.addWidget(self.comment_label)
         left_layout.addWidget(self.actions_tree)
 
-        abs_rel_box = QtGui.QGroupBox("Time mode")
+        abs_rel_box = QtWidgets.QGroupBox("Time mode")
         abs_rel_box.setToolTip("view times in absolute mode, or in relative mode (relatively to the previous acions)")
-        abs_rel_layout = QtGui.QHBoxLayout()
+        abs_rel_layout = QtWidgets.QHBoxLayout()
         abs_rel_box.setLayout(abs_rel_layout)
-        self.relative_box = QtGui.QRadioButton("relative")
-        absolute_box = QtGui.QRadioButton("absolute")
+        self.relative_box = QtWidgets.QRadioButton("relative")
+        absolute_box = QtWidgets.QRadioButton("absolute")
         abs_rel_layout.addWidget(self.relative_box)
         abs_rel_layout.addWidget(absolute_box)
         self.relative_box.setChecked(self.table.relative_view)
@@ -77,17 +77,17 @@ class ProgramEditWidget(QtGui.QWidget, object):
         self.relative_box.toggled.connect(self.on_relative_time)
         left_layout.addWidget(abs_rel_box)
 
-        ext_comp_box = QtGui.QGroupBox("View mode")
+        ext_comp_box = QtWidgets.QGroupBox("View mode")
         ext_comp_box.setToolTip("view only direct actions (compact), or extend all subprograms actions (extended)")
-        ext_comp_layout = QtGui.QGridLayout()
+        ext_comp_layout = QtWidgets.QGridLayout()
         ext_comp_box.setLayout(ext_comp_layout)
-        self.extended_box = QtGui.QRadioButton("extended")
-        compact_box = QtGui.QRadioButton("compact")
+        self.extended_box = QtWidgets.QRadioButton("extended")
+        compact_box = QtWidgets.QRadioButton("compact")
         ext_comp_layout.addWidget(self.extended_box, 0, 0, 1, 1)
         ext_comp_layout.addWidget(compact_box, 0, 1, 1, 1)
         left_layout.addWidget(ext_comp_box)
 
-        self.hide_disabled_box = QtGui.QCheckBox("hide disabled")
+        self.hide_disabled_box = QtWidgets.QCheckBox("hide disabled")
         self.hide_disabled_box.setChecked(self.table.hide_disabled)
         ext_comp_layout.addWidget(self.hide_disabled_box, 1, 0, 1, 2)
         self.hide_disabled_box.stateChanged.connect(self.on_hide_disabled)
@@ -105,30 +105,30 @@ class ProgramEditWidget(QtGui.QWidget, object):
             compact_box.setChecked(not self.table.extended_view)
             self.extended_box.toggled.connect(self.on_extended_view)
 
-        line_controls_widget = QtGui.QWidget()
+        line_controls_widget = QtWidgets.QWidget()
         line_controls_widget.setMinimumWidth(400)
-        line_controls_layout = QtGui.QHBoxLayout(line_controls_widget)
+        line_controls_layout = QtWidgets.QHBoxLayout(line_controls_widget)
 
-        delete_button = QtGui.QPushButton("Delete sel lines")
+        delete_button = QtWidgets.QPushButton("Delete sel lines")
         delete_button.clicked.connect(self.table.delete_selected_lines)
         delete_button.setStyleSheet("color: %s"%RED)
         delete_button.setToolTip("Delete selected lines")
         line_controls_layout.addWidget(delete_button)
 
-        comment_button = QtGui.QPushButton("Disable sel lines")
+        comment_button = QtWidgets.QPushButton("Disable sel lines")
         comment_button.clicked.connect(partial(self.table.comment_selected_lines, comment=True))
         comment_button.setToolTip("Disable selected lines")
         line_controls_layout.addWidget(comment_button)
-        uncomment_button = QtGui.QPushButton("Enable sel lines")
+        uncomment_button = QtWidgets.QPushButton("Enable sel lines")
         uncomment_button.clicked.connect(partial(self.table.comment_selected_lines, uncomment=True))
         uncomment_button.setToolTip("Enable selected lines")
         line_controls_layout.addWidget(uncomment_button)
-        toggle_button = QtGui.QPushButton("Toggle sel lines")
+        toggle_button = QtWidgets.QPushButton("Toggle sel lines")
         toggle_button.clicked.connect(partial(self.table.comment_selected_lines, toggle=True))
         toggle_button.setToolTip("Invert enable/disable status of selected lines")
         line_controls_layout.addWidget(toggle_button)
 
-        comment_button = QtGui.QPushButton("Set program comment")
+        comment_button = QtWidgets.QPushButton("Set program comment")
         comment_button.setToolTip("set a description for the current program")
         comment_button.clicked.connect(self.on_set_comment)
         line_controls_layout.addWidget(comment_button)
@@ -142,7 +142,7 @@ class ProgramEditWidget(QtGui.QWidget, object):
         self.actions_tree.direct_run.connect(self.table.on_direct_run)
 
     def on_set_comment(self, evt=None):
-        comment, reply = QtGui.QInputDialog.getText(self, 'Program Comment',
+        comment, reply = QtWidgets.QInputDialog.getText(self, 'Program Comment',
                                                     'enter the program description:')
         if bool(reply):
             self.table.set_comment(str(comment))

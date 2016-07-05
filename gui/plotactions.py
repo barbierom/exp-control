@@ -19,11 +19,10 @@
 
 from functools import partial
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+from PyQt5 import QtCore, QtWidgets
 
 import matplotlib
-matplotlib.use("Qt4Agg")
+#matplotlib.use("Qt4Agg")
 matplotlib.rcParams['font.size'] = 9
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -58,7 +57,7 @@ class AnalogCanvas(FigureCanvas):
         self.axis2 = self.axis.twinx()
 
 
-class AvaiableActions(QtGui.QTableWidget, object):
+class AvaiableActions(QtWidgets.QTableWidget, object):
     columns = [("name", 120),
                ("y1", 30),
                ("y2", 30),
@@ -81,13 +80,13 @@ class AvaiableActions(QtGui.QTableWidget, object):
             self.setColumnWidth(n_col, col[1])
 
         for n_row, row in enumerate(sorted(self.acts.keys())):
-            itm = QtGui.QTableWidgetItem(str(row))
+            itm = QtWidgets.QTableWidgetItem(str(row))
             itm.setFlags(itm.flags()&~QtCore.Qt.ItemIsEditable)
             itm.setToolTip(str(row))
             self.setItem(n_row, 0, itm)
 
-            check_y1 = QtGui.QCheckBox()
-            check_y2 = QtGui.QCheckBox()
+            check_y1 = QtWidgets.QCheckBox()
+            check_y2 = QtWidgets.QCheckBox()
             self.setCellWidget(n_row, 1, check_y1)
             check_y1.stateChanged.connect(partial(self.on_state_changed,
                                                   n_row=n_row, n_col=1))
@@ -127,7 +126,7 @@ class AvaiableActions(QtGui.QTableWidget, object):
         self.actions_updated.emit()
 
 
-class ColorCombo(QtGui.QComboBox):
+class ColorCombo(QtWidgets.QComboBox):
     colors = [("r", QtCore.Qt.red),
               ("b", QtCore.Qt.blue),
               ("c", QtCore.Qt.cyan),
@@ -141,11 +140,11 @@ class ColorCombo(QtGui.QComboBox):
         for n_col, col in enumerate(self.colors):
             self.addItem(col[0])
             self.setItemData(n_col,
-                             QtGui.QColor(col[1]),
+                             QtWidgets.QColor(col[1]),
                              QtCore.Qt.BackgroundRole)
 
 
-class StyleCombo(QtGui.QComboBox):
+class StyleCombo(QtWidgets.QComboBox):
     styles = ["-", "--", "-.", ":"]
     def __init__(self):
         super(StyleCombo, self).__init__()
@@ -153,7 +152,7 @@ class StyleCombo(QtGui.QComboBox):
         self.addItems(self.styles)
 
 
-class PlotActionsDialog(QtGui.QDialog, object):
+class PlotActionsDialog(QtWidgets.QDialog, object):
     def __init__(self, table, parent=None):
         super(PlotActionsDialog, self).__init__(parent=parent)
 
@@ -161,7 +160,7 @@ class PlotActionsDialog(QtGui.QDialog, object):
         self.actions = []
         self.avaiable_acts = dict()
 
-        layout = QtGui.QGridLayout()
+        layout = QtWidgets.QGridLayout()
         self.setLayout(layout)
 
         self.actions_table = AvaiableActions(parent=self)
@@ -169,16 +168,16 @@ class PlotActionsDialog(QtGui.QDialog, object):
         self.plot1 = AnalogCanvas(parent_axis=self.plot2.axis, parent=self)
         toolbar = NavigationToolbar(self.plot1, self)
 
-        update_button = QtGui.QPushButton("Update actions")
+        update_button = QtWidgets.QPushButton("Update actions")
         update_button.clicked.connect(self.update_acts)
-        self.check_legend = [QtGui.QCheckBox("legend y1"),
-                             QtGui.QCheckBox("legend y2")]
+        self.check_legend = [QtWidgets.QCheckBox("legend y1"),
+                             QtWidgets.QCheckBox("legend y2")]
         for chck in self.check_legend:
             chck.setChecked(True)
             chck.stateChanged.connect(self.plot)
 
-        legend_widget = QtGui.QWidget()
-        legend_layout = QtGui.QHBoxLayout(legend_widget)
+        legend_widget = QtWidgets.QWidget()
+        legend_layout = QtWidgets.QHBoxLayout(legend_widget)
         legend_layout.addStretch()
         legend_layout.addWidget(update_button)
         legend_layout.addWidget(self.check_legend[0])

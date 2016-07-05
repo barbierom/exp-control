@@ -23,16 +23,15 @@ from functools import partial
 from gui.constants import RED
 import gui.editdialogs
 
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+from PyQt5 import QtCore, QtWidgets
 
-class ActionsTree(QtGui.QTreeWidget, object):
+class ActionsTree(QtWidgets.QTreeWidget, object):
 
     def __init__(self, only_prg=False, parent=None, system=None):
         super(ActionsTree, self).__init__(parent)
 
         self.system = system
-
+        
         self.actions = []
         self.only_prg = only_prg
         self.update_actions(force_init=True)
@@ -40,7 +39,7 @@ class ActionsTree(QtGui.QTreeWidget, object):
         self.setHeaderHidden(True)
         self.expandsOnDoubleClick()
         self.setIndentation(16)
-        self.header().setResizeMode(QtGui.QHeaderView.ResizeToContents)
+        self.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
         self.header().setStretchLastSection(False)
 
     def update_actions(self, force_init=False, force_new_tree=False,
@@ -97,7 +96,7 @@ class ActionsTree(QtGui.QTreeWidget, object):
                                    else "1"+_ac.lower()
             new_keys = sorted(curr_item, key=ordering)
             for act in new_keys:
-                item = QtGui.QTreeWidgetItem()
+                item = QtWidgets.QTreeWidgetItem()
                 item.setText(0, act)
                 item.setToolTip(0, act)
                 new_items.append(item)
@@ -108,7 +107,7 @@ class ActionsTree(QtGui.QTreeWidget, object):
         return add_items(items)
 
 
-class ActionsTreeWidget(QtGui.QWidget, object):
+class ActionsTreeWidget(QtWidgets.QWidget, object):
 
     direct_run = QtCore.pyqtSignal(dict)
 
@@ -118,38 +117,38 @@ class ActionsTreeWidget(QtGui.QWidget, object):
         self.system = system
         self.table = table
         self.tree = ActionsTree(only_prg=False, parent=self, system=self.system)
-        layout = QtGui.QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
 
-        update_button = QtGui.QPushButton("Update actions")
+        update_button = QtWidgets.QPushButton("Update actions")
         update_button.setToolTip("update the action list")
         update_button.clicked.connect(partial(self.on_update_actions, force_init=True,
                                               force_new_tree=True))
         layout.addWidget(update_button)
 
-        board_button = QtGui.QPushButton("Reload boards")
+        board_button = QtWidgets.QPushButton("Reload boards")
         board_button.setToolTip("update and reload the board and action list")
         board_button.clicked.connect(self.on_reload_boards)
         layout.addWidget(board_button)
 
-        create_button = QtGui.QPushButton("Create sub")
+        create_button = QtWidgets.QPushButton("Create sub")
         create_button.setToolTip("create a new program")
         create_button.clicked.connect(self.on_create_action)
         layout.addWidget(create_button)
 
-        self.delete_button = QtGui.QPushButton("Delete sub")
+        self.delete_button = QtWidgets.QPushButton("Delete sub")
         self.delete_button.setToolTip("delete the selected program")
         self.delete_button.clicked.connect(self.on_delete_action)
         self.delete_button.setStyleSheet("QPushButton:enabled{color: %s}"%RED)
         self.delete_button.setEnabled(False)
         layout.addWidget(self.delete_button)
 
-        self.edit_button = QtGui.QPushButton("Edit sub")
+        self.edit_button = QtWidgets.QPushButton("Edit sub")
         self.edit_button.setToolTip("edit the selected program")
         self.edit_button.clicked.connect(self.on_edit_prg)
         self.edit_button.setEnabled(False)
         layout.addWidget(self.edit_button)
 
-        self.find_text = QtGui.QLineEdit()
+        self.find_text = QtWidgets.QLineEdit()
         self.find_text.textChanged.connect(self.on_find_event)
         self.find_text.setPlaceholderText("search...")
         self.find_text.setToolTip("filter actions by name")
@@ -181,11 +180,11 @@ class ActionsTreeWidget(QtGui.QWidget, object):
                                  filter_text=str(self.find_text.text()))
 
     def on_reload_boards(self, evt=None):
-        reply = QtGui.QMessageBox.question(self, 'Reload boards',
+        reply = QtWidgets.QMessageBox.question(self, 'Reload boards',
                                            "Are you sure to reload the board and action list, and to loose the internal boards initialization?",
-                                           QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
-                                           QtGui.QMessageBox.No)
-        reply = reply == QtGui.QMessageBox.Yes
+                                           QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                                           QtWidgets.QMessageBox.No)
+        reply = reply == QtWidgets.QMessageBox.Yes
         if reply:
             self.system.init_boards()
             self.on_update_actions(force_init=True, force_new_tree=True)
@@ -193,13 +192,13 @@ class ActionsTreeWidget(QtGui.QWidget, object):
     def on_delete_action(self, evt=None):
         prg_action = self.tree.get_selected_name()
         if prg_action == self.table.prg_name:
-            QtGui.QMessageBox.about(self, "Error", "Cannot delete the currently opened program")
+            QtWidgets.QMessageBox.about(self, "Error", "Cannot delete the currently opened program")
         elif self.system.action_list.is_program(prg_action):
-            reply = QtGui.QMessageBox.question(self, 'Delete program',
+            reply = QtWidgets.QMessageBox.question(self, 'Delete program',
                                                "Are you sure to delete program '%s'?"%prg_action,
-                                               QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
-                                               QtGui.QMessageBox.No)
-            reply = reply == QtGui.QMessageBox.Yes
+                                               QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                                               QtWidgets.QMessageBox.No)
+            reply = reply == QtWidgets.QMessageBox.Yes
             if reply:
                 self.system.parser.delete_program_file(prg_action)
                 self.table.clear_prg_from_memory(prg_action)
@@ -237,7 +236,7 @@ class ActionsTreeWidget(QtGui.QWidget, object):
         prg_action = self.tree.get_selected_name()
         if self.system.action_list.is_program(prg_action):
             if prg_action == self.table.prg_name:
-                QtGui.QMessageBox.about(self, "Error", "Cannot open the currently opened program")
+                QtWidgets.QMessageBox.about(self, "Error", "Cannot open the currently opened program")
             else:
                 self.table.add_dialog()
                 win = gui.editdialogs.ProgramEditDialog(prg_name=prg_action,

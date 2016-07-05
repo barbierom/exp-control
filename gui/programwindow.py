@@ -25,10 +25,9 @@ import gui.programwidget
 import gui.defaultsettings
 import gui.plotactions
 
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
 
-class ProgramEditWindow(QtGui.QMainWindow, object):
+class ProgramEditWindow(QtWidgets.QMainWindow, object):
 
     def __init__(self, system):
         super(ProgramEditWindow, self).__init__()
@@ -38,7 +37,7 @@ class ProgramEditWindow(QtGui.QMainWindow, object):
         self.progressbar_step_ms = 200.0
         self.progressbar_step = 0
         self.progressbar_duration = 0
-        self.progressbar = QtGui.QProgressBar()
+        self.progressbar = QtWidgets.QProgressBar()
 
         self.iter_timer = QtCore.QTimer()
         self.iter_time = 0
@@ -50,18 +49,18 @@ class ProgramEditWindow(QtGui.QMainWindow, object):
         self.init_ui()
 
     def init_ui(self):
-        main_widget = QtGui.QWidget(self)
-        main_layout = QtGui.QHBoxLayout()
+        main_widget = QtWidgets.QWidget(self)
+        main_layout = QtWidgets.QHBoxLayout()
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
 
         self.settings = gui.defaultsettings.DefaultProgSettings()
         self.settings.load_settings()
 
-        right_widget = QtGui.QWidget(self)
+        right_widget = QtWidgets.QWidget(self)
 
-        self.cmd_init_edit = QtGui.QTextEdit("")
-        self.cmd_loop_edit = QtGui.QTextEdit("")
+        self.cmd_init_edit = QtWidgets.QTextEdit("")
+        self.cmd_loop_edit = QtWidgets.QTextEdit("")
 
         self.table_widget = gui.programwidget.ProgramEditWidget(parent=self, system=self.system)
         self.table_widget.table.program_opened.connect(self.on_program_opened)
@@ -73,7 +72,7 @@ class ProgramEditWindow(QtGui.QMainWindow, object):
             prg_name = self.settings.last_prg
         self.table_widget.table.open_prg(prg_name=prg_name)
 
-        right_layout = QtGui.QGridLayout(right_widget)
+        right_layout = QtWidgets.QGridLayout(right_widget)
 
         right_widget.setMinimumWidth(160)
         right_widget.setMaximumWidth(300)
@@ -81,66 +80,66 @@ class ProgramEditWindow(QtGui.QMainWindow, object):
         main_layout.addWidget(self.table_widget)
         main_layout.addWidget(right_widget)
 
-        open_button = QtGui.QPushButton("Open prg")
+        open_button = QtWidgets.QPushButton("Open prg")
         open_button.setToolTip("open a program")
         open_button.clicked.connect(partial(self.table_widget.table.open_prg, ask_name=True))
         right_layout.addWidget(open_button, 0, 0, 1, 1)
 
-        open_new_button = QtGui.QPushButton("New prg")
+        open_new_button = QtWidgets.QPushButton("New prg")
         open_new_button.setToolTip("open a new program")
         open_new_button.clicked.connect(partial(self.table_widget.table.open_prg, prg_name=None))
         right_layout.addWidget(open_new_button, 0, 1, 1, 1)
 
-        save_button = QtGui.QPushButton("Save prg")
+        save_button = QtWidgets.QPushButton("Save prg")
         save_button.setToolTip("save current program")
         save_button.clicked.connect(self.table_widget.table.save_prg)
         save_button.setStyleSheet("color: %s"%GREEN)
         right_layout.addWidget(save_button, 1, 0, 1, 1)
 
-        save_as_button = QtGui.QPushButton("Save prg as")
+        save_as_button = QtWidgets.QPushButton("Save prg as")
         save_as_button.setToolTip("save current program with a new name")
         save_as_button.clicked.connect(self.table_widget.table.save_prg_as)
         save_as_button.setStyleSheet("color: %s"%GREEN)
         right_layout.addWidget(save_as_button, 1, 1, 1, 1)
 
-        self.save_before_send_check = QtGui.QCheckBox("save before send")
+        self.save_before_send_check = QtWidgets.QCheckBox("save before send")
         self.save_before_send_check.setToolTip("save current program before sending it to FPGAs")
         self.save_before_send_check.setChecked(True)
         right_layout.addWidget(self.save_before_send_check, 2, 0, 1, 2)
 
-        send_button = QtGui.QPushButton("Send program")
+        send_button = QtWidgets.QPushButton("Send program")
         send_button.setToolTip("send current program to the FPGAs")
         send_button.clicked.connect(self.on_program_sent)
         send_button.setStyleSheet("color: %s"%BLUE)
         right_layout.addWidget(send_button, 3, 0, 1, 2)
 
-        plot_button = QtGui.QPushButton("Plot acts")
+        plot_button = QtWidgets.QPushButton("Plot acts")
         plot_button.setToolTip("graphical representation for the program actions")
         plot_button.clicked.connect(self.on_plot_actions)
         right_layout.addWidget(plot_button, 4, 0, 1, 1)
 
-        plot_button = QtGui.QPushButton("Check prg")
+        plot_button = QtWidgets.QPushButton("Check prg")
         plot_button.setToolTip("perform a validity check for the program actions")
         plot_button.clicked.connect(self.on_check_program)
         right_layout.addWidget(plot_button, 4, 1, 1, 1)
 
-        update_fpga_button = QtGui.QPushButton("Reload FPGAs")
+        update_fpga_button = QtWidgets.QPushButton("Reload FPGAs")
         update_fpga_button.setToolTip("initialize the FPGA list")
         update_fpga_button.clicked.connect(partial(self.table_widget.table.update_fpgas, init=True))
         right_layout.addWidget(update_fpga_button, 5, 0, 1, 1)
 
-        check_fpga_button = QtGui.QPushButton("Check FPGAs")
+        check_fpga_button = QtWidgets.QPushButton("Check FPGAs")
         check_fpga_button.setToolTip("check the state of the FPGA list")
         check_fpga_button.clicked.connect(partial(self.table_widget.table.update_fpgas, init=False))
         right_layout.addWidget(check_fpga_button, 5, 1, 1, 1)
 
 
         #iterations/commands tab
-        iter_cmd_tabwidget = QtGui.QTabWidget(self)
-        cmd_widget = QtGui.QWidget()
-        cmd_layout = QtGui.QGridLayout(cmd_widget)
-        iter_widget = QtGui.QWidget()
-        iter_layout = QtGui.QVBoxLayout(iter_widget)
+        iter_cmd_tabwidget = QtWidgets.QTabWidget(self)
+        cmd_widget = QtWidgets.QWidget()
+        cmd_layout = QtWidgets.QGridLayout(cmd_widget)
+        iter_widget = QtWidgets.QWidget()
+        iter_layout = QtWidgets.QVBoxLayout(iter_widget)
         iter_cmd_tabwidget.addTab(iter_widget, "Iterations")
         iter_cmd_tabwidget.addTab(cmd_widget, "Commands")
 
@@ -148,17 +147,17 @@ class ProgramEditWindow(QtGui.QMainWindow, object):
 
 
         #commands tab
-        init_tab = QtGui.QWidget()
+        init_tab = QtWidgets.QWidget()
         init_tab.setToolTip("run once at the beginning, variables prg and cmd are avaiable")
-        init_layout = QtGui.QVBoxLayout(init_tab)
+        init_layout = QtWidgets.QVBoxLayout(init_tab)
         init_layout.addWidget(self.cmd_init_edit)
 
-        loop_tab = QtGui.QWidget()
+        loop_tab = QtWidgets.QWidget()
         loop_tab.setToolTip("infinite loop, interrupt with cmd.stop()")
-        loop_layout = QtGui.QVBoxLayout(loop_tab)
+        loop_layout = QtWidgets.QVBoxLayout(loop_tab)
         loop_layout.addWidget(self.cmd_loop_edit)
 
-        cmd_sub_tabwidget = QtGui.QTabWidget(self)
+        cmd_sub_tabwidget = QtWidgets.QTabWidget(self)
         cmd_sub_tabwidget.addTab(init_tab, "Init")
         cmd_sub_tabwidget.addTab(loop_tab, "Loop")
 
@@ -174,11 +173,11 @@ class ProgramEditWindow(QtGui.QMainWindow, object):
         self.cmd_init_edit.textChanged.connect(self.on_cmd_changed)
 
         #start stop commands buttons settings
-        start_cmd_button = QtGui.QPushButton("Start")
+        start_cmd_button = QtWidgets.QPushButton("Start")
         start_cmd_button.setToolTip("send system commands (init + the infinite loop)")
         start_cmd_button.clicked.connect(self.on_start_cmd)
         start_cmd_button.setStyleSheet("color: %s"%BLUE)
-        stop_cmd_button = QtGui.QPushButton("Stop")
+        stop_cmd_button = QtWidgets.QPushButton("Stop")
         stop_cmd_button.setToolTip("stop the running system commands")
         stop_cmd_button.clicked.connect(self.on_stop_cmd)
         stop_cmd_button.setStyleSheet("color: %s"%RED)
@@ -190,18 +189,18 @@ class ProgramEditWindow(QtGui.QMainWindow, object):
 
 
         #iterations parameters group
-        self.iter_par_groupbox = QtGui.QGroupBox("Iter program")
-        iter_par_layout = QtGui.QGridLayout(self.iter_par_groupbox)
+        self.iter_par_groupbox = QtWidgets.QGroupBox("Iter program")
+        iter_par_layout = QtWidgets.QGridLayout(self.iter_par_groupbox)
 
         #current program iterating label
-        self.iter_prg_label = QtGui.QLabel("")
+        self.iter_prg_label = QtWidgets.QLabel("")
         self.iter_prg_label.setToolTip("")
 
         #label of the remaining iterations
-        self.iter_current_label = QtGui.QLabel("")
+        self.iter_current_label = QtWidgets.QLabel("")
 
         #setter of the number of iters
-        self.iter_num_text = QtGui.QSpinBox()
+        self.iter_num_text = QtWidgets.QSpinBox()
         self.iter_num_text.setMaximum(999)
         self.iter_num_text.setMinimum(-1)
         self.iter_num = 0
@@ -209,21 +208,21 @@ class ProgramEditWindow(QtGui.QMainWindow, object):
         self.iter_num_text.setToolTip("number of times that the program will be repeated, use -1 for infinite loop")
 
         #repeat when the program finish with and additional time (button + value)
-        self.iter_cont_time_text = QtGui.QLineEdit("100.0")
+        self.iter_cont_time_text = QtWidgets.QLineEdit("100.0")
         self.iter_cont_time_text.setToolTip("safety time (in ms) between the end of the previous program and the new iteration")
-        self.iter_cont_button = QtGui.QRadioButton("continuously")
+        self.iter_cont_button = QtWidgets.QRadioButton("continuously")
         self.iter_cont_button.setToolTip("repeat the same program after the end of the previous iteration")
         self.iter_cont_button.setChecked(True)
 
         #repeat the program at a fixed time (button + value)
-        self.iter_fixed_time_text = QtGui.QLineEdit("60000.0")
+        self.iter_fixed_time_text = QtWidgets.QLineEdit("60000.0")
         self.iter_fixed_time_text.setToolTip("time (in ms) between each iteration")
-        self.iter_fixed_button = QtGui.QRadioButton("fixed time")
+        self.iter_fixed_button = QtWidgets.QRadioButton("fixed time")
         self.iter_fixed_button.setToolTip("repeat the same program after a fixed time")
 
         #set iter parameters layout
         iter_par_layout.addWidget(self.iter_prg_label, 0, 0, 1, 2)
-        iter_par_layout.addWidget(QtGui.QLabel("iterations #"), 1, 0, 1, 1)
+        iter_par_layout.addWidget(QtWidgets.QLabel("iterations #"), 1, 0, 1, 1)
         iter_par_layout.addWidget(self.iter_num_text, 1, 1, 1, 1)
         iter_par_layout.addWidget(self.iter_cont_button, 2, 0, 1, 1)
         iter_par_layout.addWidget(self.iter_cont_time_text, 2, 1, 1, 1)
@@ -232,7 +231,7 @@ class ProgramEditWindow(QtGui.QMainWindow, object):
         iter_par_layout.addWidget(self.iter_current_label, 4, 0, 1, 2)
 
         #iter start/stop
-        self.iter_start_button = QtGui.QPushButton("Start/Stop")
+        self.iter_start_button = QtWidgets.QPushButton("Start/Stop")
         self.iter_start_button.setToolTip("begin or interrupt to repeat a program with the given parameters")
         self.iter_start_button.setCheckable(True)
         self.iter_start_button.clicked.connect(self.on_start_stop_iter)
@@ -252,18 +251,18 @@ class ProgramEditWindow(QtGui.QMainWindow, object):
         self.progressbar.setMaximum(100)
         self.progressbar.setValue(0)
 
-        self.fpga_count_label = QtGui.QLabel("")
+        self.fpga_count_label = QtWidgets.QLabel("")
 
-        self.fpga_status_label = QtGui.QWidget()
+        self.fpga_status_label = QtWidgets.QWidget()
         self.fpga_count_label.setMinimumWidth(70)
         self.fpga_status_label.setMinimumWidth(350)
         statusbar.addPermanentWidget(self.fpga_count_label, 1)
         statusbar.addPermanentWidget(self.fpga_status_label, 3)
 
-        fpga_layout = QtGui.QHBoxLayout(self.fpga_status_label)
+        fpga_layout = QtWidgets.QHBoxLayout(self.fpga_status_label)
         self.fpga_status_labels = []
         for _ in range(5):
-            labl = QtGui.QLabel(self)
+            labl = QtWidgets.QLabel(self)
             self.fpga_status_labels.append(labl)
             fpga_layout.addWidget(labl)
 
