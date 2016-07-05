@@ -23,23 +23,12 @@ import sys, os
 #change path
 os.chdir(os.path.dirname(os.path.abspath(sys.argv[0])))
 
-import PyQt5.QtGui as QtGui
-
 from libraries.system import System
-import gui.programwindow
-from gui.constants import PRG_NAME, PRG_VERSION
+PRG_NAME, PRG_VERSION = "EC - Experiment Control", "0.6.2"
 
 def main(args):
-
     system = System()
-    app = QtGui.QApplication(args)
-    win = gui.programwindow.ProgramEditWindow(system=system)
-
-    win.setWindowTitle("%s (%s)" % (PRG_NAME, PRG_VERSION))
-    win.showMaximized()
-    win.setFocus(True)
-
-    sys.exit(app.exec_())
+    
 
 if __name__ == "__main__":
     main(sys.argv)
