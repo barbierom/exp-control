@@ -18,13 +18,11 @@
 
 #pylint: disable-msg=E1101
 
-from . import action as lib_action
-from . import program as lib_program
-from . import board as lib_board
-'''removed to avoid cyclic imports
-#from . import system as lib_system
-'''
-from . import ramp as lib_ramp
+from libraries import action as lib_action
+from libraries import program as lib_program
+from libraries import board as lib_board
+from libraries import system as lib_system
+from libraries import ramp as lib_ramp
 
 
 class ActionList(object):

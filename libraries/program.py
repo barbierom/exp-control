@@ -20,9 +20,9 @@
 
 '''imports sorted alphabetically'''
 
-from . import action as lib_action
-from . import instruction as lib_instructions
-from . import ramp as lib_ramp
+from libraries import action as lib_action
+from libraries import instruction as lib_instructions
+from libraries import ramp as lib_ramp
 from copy import copy
 
 class Program(object):

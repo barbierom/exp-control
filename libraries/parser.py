@@ -18,7 +18,7 @@
 
 PRG_FILE_VERSION = "0.5.1"
 
-import libraries.program as lib_program
+from libraries import program as lib_program
 
 import re, os
 

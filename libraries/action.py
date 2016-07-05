@@ -18,7 +18,7 @@
 
 #pylint: disable-msg=E1101
 
-from . import board as lib_board
+from libraries import board as lib_board
 
 class Action(object):
     def __init__(self, system, name, comment=""):

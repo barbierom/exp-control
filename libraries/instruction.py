@@ -19,8 +19,8 @@
 #pylint: disable-msg=E1101
 
 '''moved to the bottom'''
-from . import action as lib_action
-from . import program as lib_program
+from libraries import action as lib_action
+from libraries import program as lib_program
 
 '''Unbelievably dirty fix:
 import sys
