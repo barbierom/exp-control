@@ -1,0 +1,3 @@
+This branch is going to be working with:
+Python >= 3.5
+PyQt5 (easy to install in 3.5)
