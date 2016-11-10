@@ -23,7 +23,13 @@ import sys, os
 #change path
 os.chdir(os.path.dirname(os.path.abspath(sys.argv[0])))
 
-import PyQt4.QtGui as QtGui
+
+import PySide.QtGui as QtGui
+
+import PySide.QtCore as QtCore
+QtCore.pyqtSignal = QtCore.Signal
+QtCore.pyqtSlot = QtCore.Slot
+
 
 from libraries.system import System
 import gui.programwindow
@@ -37,7 +43,7 @@ def main(args):
 
     win.setWindowTitle("%s (%s)" % (PRG_NAME, PRG_VERSION))
     win.showMaximized()
-    win.setFocus(True)
+    win.setFocus()
 
     sys.exit(app.exec_())
 

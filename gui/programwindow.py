@@ -25,8 +25,8 @@ import gui.programwidget
 import gui.defaultsettings
 import gui.plotactions
 
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PySide.QtGui as QtGui
+import PySide.QtCore as QtCore
 
 class ProgramEditWindow(QtGui.QMainWindow, object):
 

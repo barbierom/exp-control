@@ -24,7 +24,7 @@ from gui.constants import RED
 import gui.programtable
 import gui.actionstree
 
-import PyQt4.QtGui as QtGui
+import PySide.QtGui as QtGui
 
 class ProgramEditWidget(QtGui.QWidget, object):
 

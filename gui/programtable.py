@@ -24,8 +24,8 @@ import re
 import gui.editdialogs
 import gui.opensavedialogs
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PySide.QtCore as QtCore
+import PySide.QtGui as QtGui
 
 
 class ProgramTable(QtGui.QTableWidget, object):
